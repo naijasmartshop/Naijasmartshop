@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartShop</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: Montserrat, Arial, sans-serif;
+            background: linear-gradient(135deg, #f0eee7 0%, #eff8ed 100%);
+            color: #222;
+            margin: 0;
+        }
+        header {
+            background: #12770c;
+            color: white;
+            padding: 35px 20px 20px 20px;
+            text-align: center;
+            box-shadow: 0 3px 16px #0001;
+            border-radius: 0 0 25px 25px;
+        }
+        header h1 {
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+        .market-table {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+            gap: 34px;
+            margin: 40px auto 160px auto;
+            max-width: 1200px;
+            width: 100%;
+        }
+        .phone-card {
+            border: 1.5px solid #e3f6e3;
+            padding: 19px 15px 18px 15px;
+            border-radius: 18px;
+            background: #fff;
+            box-shadow: 0 10px 28px #12770c09, 0 2px 4px #b2e7b777;
+            transition: box-shadow 0.18s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .phone-card:hover {
+            box-shadow: 0 15px 32px #12770c1c, 0 3px 8px #b2e7b799;
+            transform: translateY(-3px) scale(1.03);
+            border-color: #fbaa16;
+        }
+        .phone-card img {
+            max-width: 210px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 13px;
+            margin-bottom: 16px;
+            box-shadow:0 2px 14px #2222;
+            background: #eee;
+        }
+        .phone-brand {
+            font-weight: 700;
+            font-size: 1.09em;
+            margin: 5px 0 3px 0;
+            color: #12770c;
+            text-align: center;
+        }
+        .phone-model {
+            font-weight: 500;
+            font-size: 1em;
+            margin-bottom:7px;
+            color: #222;
+            text-align:center;
+        }
+        .phone-price {
+            color: #12770c;
+            font-size: 1.22em;
+            background: linear-gradient(90deg,#fffbe9,#ffe9ae);
+            padding: 5px 20px;
+            border-radius: 14px;
+            margin: 11px 0 0 0;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 1px 5px #ffd06036;
+        }
+        .buy-btn {
+            background: #fbaa16;
+            color: white;
+            padding: 11px 20px;
+            border: none;
+            border-radius: 8px;
+            margin-top: 16px;
+            cursor: pointer;
+            font-weight:700;
+            font-size:1.01em;
+            transition: background 0.2s;
+            box-shadow: 0 2px 10px #fbaa1640;
+        }
+        .buy-btn:hover {
+            background: #12770c;
+        }
+        .cart {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(90deg,#fffbe9 70%,#eaffea);
+            border-top:2px solid #12770c27;
+            box-shadow: 0 -3px 14px #12770c36;
+            padding: 18px 40px 16px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 5;
+        }
+        .cart-total {
+            font-size: 1.32em;
+            font-weight: bold;
+            color: #12770c;
+            letter-spacing: 2px;
+        }
+        .cart-items-list {
+            margin: 0 40px; font-size:0.99em; color:#444;
+        }
+        @media (max-width:700px){
+            .market-table{gap:12px; margin:19px 5px 120px 5px;}
+            .cart{padding:11px;}
+        }
+        @media (max-width:430px){
+            .phone-card img{max-width:99vw;height:115px;}
+            .market-table{grid-template-columns:1fr;}
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Buy Your Smartphone at NaijaSmartShop!</h1>
+        <p>
+            <span>iPhone • Samsung • Infinix • Tecno • Xiaomi • Oppo</span>
+            <br>
+            <span style="font-size:1.03em;">
+                <b>All for ₦10,000 - ₦20,000 all in favour of @superbo89.jr giveaway</b>
+            </span>
+        </p>
+    </header>
+    <div class="market-table" id="market-table"></div>
+
+    <div class="cart">
+        <div>
+            <span class="cart-total">Total: ₦<span id="cart-total">0</span></span>
+            <span class="cart-items-list" id="cart-items-list"></span>
+        </div>
+        <button class="buy-btn" onclick="checkout()">Checkout</button>
+    </div>
+
+    <script>
+    // 5 real models per brand, equally distributed, proper names, but img:""
+    const phoneModels = [
+        // iPhone
+        { brand: "iPhone", model: "iPhone 13 Pro", price: 19000, img: "" },
+        { brand: "iPhone", model: "iPhone 12", price: 18000, img: "" },
+        { brand: "iPhone", model: "iPhone SE 2022", price: 14000, img: "" },
+        { brand: "iPhone", model: "iPhone XR", price: 13000, img: "" },
+        { brand: "iPhone", model: "iPhone 11", price: 15000, img: "" },
+        // Samsung
+        { brand: "Samsung", model: "Galaxy S21 Ultra", price: 20000, img: "" },
+        { brand: "Samsung", model: "Galaxy S20 FE", price: 17000, img: "" },
+        { brand: "Samsung", model: "Galaxy Note 20", price: 17000, img: "" },
+        { brand: "Samsung", model: "Galaxy A52", price: 13500, img: "" },
+        { brand: "Samsung", model: "Galaxy S10", price: 12000, img: "" },
+        // Infinix
+        { brand: "Infinix", model: "Infinix Note 12", price: 11000, img: "" },
+        { brand: "Infinix", model: "Infinix Hot 10", price: 10000, img: "" },
+        { brand: "Infinix", model: "Infinix Smart 7", price: 12000, img: "" },
+        { brand: "Infinix", model: "Infinix S5", price: 10500, img: "" },
+        { brand: "Infinix", model: "Infinix Zero 8", price: 13500, img: "" },
+        // Tecno
+        { brand: "Tecno", model: "Tecno Camon 19", price: 11500, img: "" },
+        { brand: "Tecno", model: "Tecno Spark 10", price: 11000, img: "" },
+        { brand: "Tecno", model: "Tecno Pop 6 Go", price: 10000, img: "" },
+        { brand: "Tecno", model: "Tecno Pova Neo", price: 10500, img: "" },
+        { brand: "Tecno", model: "Tecno Camon 15", price: 10900, img: "" },
+        // Xiaomi
+        { brand: "Xiaomi", model: "Redmi Note 10 Pro", price: 18000, img: "" },
+        { brand: "Xiaomi", model: "Redmi Note 9", price: 14500, img: "" },
+        { brand: "Xiaomi", model: "Redmi 10C", price: 10500, img: "" },
+        { brand: "Xiaomi", model: "Poco X3 NFC", price: 12000, img: "" },
+        { brand: "Xiaomi", model: "Redmi 9A", price: 10000, img: "" },
+        // Oppo
+        { brand: "Oppo", model: "Oppo Reno 8", price: 14000, img: "" },
+        { brand: "Oppo", model: "Oppo A74", price: 12000, img: "" },
+        { brand: "Oppo", model: "Oppo F19 Pro+", price: 12500, img: "" },
+        { brand: "Oppo", model: "Oppo A55", price: 11000, img: "" },
+        { brand: "Oppo", model: "Oppo Find X2", price: 15000, img: "" }
+    ];
+
+    const marketTable = document.getElementById('market-table');
+    phoneModels.forEach((ph, idx) => {
+        const div = document.createElement('div');
+        div.className = "phone-card";
+        div.innerHTML = `
+            <img src="${ph.img}" alt="${ph.brand} ${ph.model}">
+            <div class="phone-brand">${ph.brand}</div>
+            <div class="phone-model">${ph.model}</div>
+            <div class="phone-price">₦${ph.price.toLocaleString()}</div>
+            <button class="buy-btn" onclick="addToCart(${idx})">Add to Cart</button>
+        `;
+        marketTable.appendChild(div);
+    });
+
+    // Cart operations
+    let cart = [];
+    function addToCart(idx) {
+        cart.push(phoneModels[idx]);
+        updateCart();
+    }
+
+    function updateCart() {
+        let total = cart.reduce((sum, item) => sum + item.price, 0);
+        document.getElementById('cart-total').textContent = total.toLocaleString();
+        document.getElementById('cart-items-list').textContent = cart.length ? 
+            "Items: " + cart.map(it => it.brand + " " + it.model).join(", ") : "No items in cart";
+        sessionStorage.setItem('cart', JSON.stringify(cart));
+        sessionStorage.setItem('cart-total', total);
+    }
+
+    function checkout() {
+        if (!cart.length) { alert("Your cart is empty."); return; }
+        window.location.href = "checkout.html";
+    }
+    </script>
+</body>
+</html>
