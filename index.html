@@ -117,6 +117,35 @@
             width: fit-content;
         }
 
+        /* small controls on the product card (shown after add) */
+        .card-controls {
+            margin-top: 12px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+        .card-controls .qty-btn {
+            background:#12770c;
+            color:white;
+            border:none;
+            border-radius:6px;
+            width:34px;
+            height:34px;
+            cursor:pointer;
+            font-weight:700;
+            font-size:1.05em;
+        }
+        .card-controls .qty {
+            min-width:32px;
+            text-align:center;
+            font-weight:700;
+            color:#12770c;
+            background:#fffbe9;
+            border-radius:6px;
+            padding:6px 10px;
+            box-shadow:0 1px 4px #ffd06036;
+        }
+
         /* Floating round cart icon */
         .cart-icon {
             position: fixed;
@@ -390,7 +419,17 @@
             <div class="phone-brand">${ph.brand}</div>
             <div class="phone-model">${ph.model}</div>
             <div class="phone-price">₦${ph.price.toLocaleString()}</div>
-            <button class="buy-btn" onclick="addToCart(${idx})">Add to Cart</button>
+
+            <!-- Add button (shown when qty = 0) -->
+            <button class="buy-btn" id="add-btn-${idx}" onclick="addToCart(${idx})">Add to Cart</button>
+
+            <!-- Small inline controls (shown after add) -->
+            <div class="card-controls" id="card-controls-${idx}" style="display:none;">
+                <button class="qty-btn" aria-label="decrease" onclick="changeQtyByProduct(${idx}, -1)">−</button>
+                <div class="qty" id="card-qty-${idx}">0</div>
+                <button class="qty-btn" aria-label="increase" onclick="changeQtyByProduct(${idx}, 1)">+</button>
+            </div>
+
             <div class="qty-badge" id="qty-${idx}">Qty in cart: 0</div>
         `;
         marketTable.appendChild(div);
@@ -468,12 +507,27 @@
             cartSummary.textContent = `${cart.reduce((s, it) => s + it.qty, 0)} items`;
         }
 
-        // update qty badges on product cards
+        // update qty badges on product cards AND per-card controls
         phoneModels.forEach((ph, idx) => {
             const badge = document.getElementById(`qty-${idx}`);
-            if (!badge) return;
+            const addBtn = document.getElementById(`add-btn-${idx}`);
+            const controls = document.getElementById(`card-controls-${idx}`);
+            const cardQty = document.getElementById(`card-qty-${idx}`);
+
+            if (!badge || !addBtn || !controls || !cardQty) return;
+
             const found = cart.find(c => c.brand === ph.brand && c.model === ph.model);
-            badge.textContent = found ? `Qty in cart: ${found.qty}` : "Qty in cart: 0";
+            if (found) {
+                badge.textContent = `Qty in cart: ${found.qty}`;
+                addBtn.style.display = 'none';
+                controls.style.display = 'flex';
+                cardQty.textContent = found.qty;
+            } else {
+                badge.textContent = "Qty in cart: 0";
+                addBtn.style.display = 'block';
+                controls.style.display = 'none';
+                cardQty.textContent = '0';
+            }
         });
 
         // persist to sessionStorage
@@ -481,7 +535,7 @@
         sessionStorage.setItem('cart-total', total);
     }
 
-    // Add to cart (increments qty if already present)
+    // Add to cart (increments qty if already present). Also shows per-card controls after tapping.
     function addToCart(idx) {
         const ph = phoneModels[idx];
         const existingIndex = cart.findIndex(c => c.brand === ph.brand && c.model === ph.model);
@@ -498,16 +552,40 @@
         }
         updateCart();
         // briefly highlight the cart icon to show feedback
-        cartIcon.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }], { duration: 220 });
+        if (cartIcon) {
+            cartIcon.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }], { duration: 220 });
+        }
     }
 
-    // Change quantity (delta: +1 or -1)
+    // Change quantity by cart index (used inside modal)
     function changeQty(cartIndex, delta) {
         if (cartIndex < 0 || cartIndex >= cart.length) return;
         cart[cartIndex].qty += delta;
         if (cart[cartIndex].qty <= 0) {
             // remove item
             cart.splice(cartIndex, 1);
+        }
+        updateCart();
+    }
+
+    // Change quantity by product index (used by per-card controls)
+    function changeQtyByProduct(productIdx, delta) {
+        const ph = phoneModels[productIdx];
+        const existingIndex = cart.findIndex(c => c.brand === ph.brand && c.model === ph.model);
+        if (existingIndex > -1) {
+            cart[existingIndex].qty += delta;
+            if (cart[existingIndex].qty <= 0) {
+                cart.splice(existingIndex, 1);
+            }
+        } else if (delta > 0) {
+            // add new item with qty 1
+            cart.push({
+                brand: ph.brand,
+                model: ph.model,
+                price: ph.price,
+                img: ph.img || "",
+                qty: 1
+            });
         }
         updateCart();
     }
@@ -555,9 +633,10 @@
     cartCloseBtn.addEventListener('click', closeCartModal);
     cartCheckoutBtn.addEventListener('click', () => { checkout(); });
 
-    // expose changeQty and addToCart to global scope (used by inline onclicks)
+    // expose functions to global scope for inline onclicks
     window.changeQty = changeQty;
     window.addToCart = addToCart;
+    window.changeQtyByProduct = changeQtyByProduct;
     window.checkout = checkout;
 
     // initial render
