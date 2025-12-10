@@ -5,14 +5,46 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Payment</title>
   <style>
-    .responsive-embed { position:relative; padding-top:56.25%; height:0; overflow:hidden; }
-    .responsive-embed iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
-    .fallback { text-align:center; margin-top:8px; }
+    /* Make the page and embed fill the visible viewport on all devices */
+    :root { --vh: 1vh; } /* fallback */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background: #fff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* Use the --vh variable to compensate for mobile browser UI */
+    .responsive-embed {
+      position: relative;
+      height: calc(var(--vh, 1vh) * 100);
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .responsive-embed iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: transparent;
+    }
+
+    .fallback {
+      text-align: center;
+      padding: 1rem;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
   </style>
 </head>
 <body>
-  <!-- Responsive embed for the FinalForm form -->
-  <div class="responsive-embed">
+  <div class="responsive-embed" role="region" aria-label="Payment form">
     <iframe
       src="https://form.finalform.so/forms/yNSfUUw2"
       title="Payment form"
@@ -20,7 +52,29 @@
       referrerpolicy="no-referrer-when-downgrade"
       marginheight="0"
       marginwidth="0"
+      allowfullscreen
     ></iframe>
   </div>
+
+  <noscript>
+    <div class="fallback">
+      The payment form requires JavaScript to size correctly. You can open it directly:
+      <br />
+      <a href="https://form.finalform.so/forms/yNSfUUw2" target="_blank" rel="noopener noreferrer">Open payment form</a>
+    </div>
+  </noscript>
+
+  <script>
+    // Ensure --vh equals 1% of the actual visible viewport height.
+    // This works around mobile browsers that change the viewport size when address/toolbars show or hide.
+    (function setVh() {
+      function updateVh() {
+        document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+      }
+      window.addEventListener('resize', updateVh, { passive: true });
+      window.addEventListener('orientationchange', updateVh, { passive: true });
+      updateVh();
+    })();
+  </script>
 </body>
 </html>
